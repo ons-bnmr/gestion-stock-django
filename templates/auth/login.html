@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block auth_content %}
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background: var(--primary); padding: 2rem;">
+    <div style="width:100%; max-width:420px;">
+
+        <!-- Logo -->
+        <div style="text-align:center; margin-bottom:2.5rem;">
+            <div style="width:60px;height:60px;background:linear-gradient(135deg,#f97316,#fb923c);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 8px 25px rgba(249,115,22,.35);margin-bottom:1rem;">📦</div>
+            <h1 style="font-size:1.8rem;font-weight:800;margin:0;">Stock<span class="text-accent">Pro</span></h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin-top:.25rem;">Gestion de stock intelligente</p>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+            <div class="card-body" style="padding:2rem;">
+                <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:1.5rem;">Bienvenue 👋</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-person me-1"></i> Nom d'utilisateur</label>
+                        <input type="text" name="username" class="form-control" placeholder="Entrez votre identifiant" required autofocus>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label"><i class="bi bi-lock me-1"></i> Mot de passe</label>
+                        <input type="password" name="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" style="padding:.75rem;">
+                        <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <p style="text-align:center;color:var(--text-muted);font-size:.8rem;margin-top:1.5rem;">
+            <i class="bi bi-shield-lock me-1"></i> Accès réservé aux gestionnaires autorisés
+        </p>
+    </div>
+</div>
+{% endblock %}
