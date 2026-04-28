@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Supprimer {{ produit.nom }}{% endblock %}
+{% block page_title %}Confirmer la suppression{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card" style="border-color:var(--danger);">
+            <div class="card-header" style="border-color:var(--danger);color:var(--danger);">
+                <i class="bi bi-exclamation-triangle me-2"></i>Attention — Action irréversible
+            </div>
+            <div class="card-body" style="text-align:center;padding:2.5rem;">
+                <div style="font-size:3rem;margin-bottom:1rem;">🗑️</div>
+                <h3 style="font-weight:700;margin-bottom:.5rem;">Supprimer ce produit ?</h3>
+                <p class="text-muted">Vous êtes sur le point de supprimer définitivement :</p>
+                <div style="background:var(--surface2);border-radius:10px;padding:1rem;margin:1rem 0;">
+                    <strong style="font-size:1.1rem;">{{ produit.nom }}</strong>
+                    <div class="text-muted fw-mono" style="font-size:.85rem;">{{ produit.reference }}</div>
+                </div>
+                <p style="color:var(--danger);font-size:.875rem;font-weight:600;">Cette action ne peut pas être annulée.</p>
+
+                <form method="POST" class="mt-3">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="{% url 'produit_liste' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Oui, supprimer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
