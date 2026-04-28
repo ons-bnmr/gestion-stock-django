@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}Produits{% endblock %}
+{% block page_title %}Produits{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'produit_ajouter' %}" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-lg"></i> Nouveau produit
+</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Search & Filters -->
+<div class="card mb-4">
+    <div class="card-body" style="padding:1.25rem 1.5rem;">
+        <form method="GET" class="row g-2 align-items-end">
+            <div class="col-md-5">
+                {{ form.q }}
+            </div>
+            <div class="col-md-3">
+                {{ form.categorie }}
+            </div>
+            <div class="col-md-2">
+                {{ form.statut }}
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill">
+                    <i class="bi bi-search"></i> Filtrer
+                </button>
+                <a href="{% url 'produit_liste' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Count -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <p class="text-muted mb-0" style="font-size:.875rem;">
+        <i class="bi bi-box-seam me-1"></i>
+        <strong style="color:var(--text);">{{ total }}</strong> produit{{ total|pluralize }} trouvé{{ total|pluralize }}
+    </p>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="card-body" style="padding:0;">
+        {% if produits %}
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:40px;"></th>
+                        <th>Produit</th>
+                        <th>Référence</th>
+                        <th>Catégorie</th>
+                        <th>Prix</th>
+                        <th>Quantité</th>
+                        <th>Statut</th>
+                        <th style="width:130px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in produits %}
+                    <tr>
+                        <td>
+                            {% if p.image %}
+                                <img src="{{ p.image.url }}" class="product-img" alt="">
+                            {% else %}
+                                <div class="product-img-placeholder"><i class="bi bi-box"></i></div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'produit_detail' p.pk %}" style="color:var(--text);text-decoration:none;font-weight:600;">{{ p.nom }}</a>
+                            {% if p.stock_faible %}<span class="ms-1" title="Stock faible">⚠️</span>{% endif %}
+                        </td>
+                        <td><span class="fw-mono" style="font-size:.82rem;color:var(--text-muted);">{{ p.reference }}</span></td>
+                        <td>
+                            {% if p.categorie %}
+                            <span style="display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;">
+                                <span style="width:8px;height:8px;border-radius:50%;background:{{ p.categorie.couleur }};display:inline-block;"></span>
+                                {{ p.categorie.nom }}
+                            </span>
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                        <td class="fw-mono">{{ p.prix }} TND</td>
+                        <td>
+                            <span class="fw-mono {% if p.stock_faible %}text-danger{% else %}text-success{% endif %}">
+                                {{ p.quantite }}
+                            </span>
+                        </td>
+                        <td><span class="badge badge-{{ p.statut }}">{{ p.get_statut_display }}</span></td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'produit_detail' p.pk %}" class="btn btn-sm btn-outline-secondary" title="Voir"><i class="bi bi-eye"></i></a>
+                                <a href="{% url 'produit_modifier' p.pk %}" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'produit_supprimer' p.pk %}" class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if produits.has_other_pages %}
+        <div class="d-flex justify-content-center py-3">
+            <nav>
+                <ul class="pagination mb-0">
+                    {% if produits.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ produits.previous_page_number }}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% for num in produits.paginator.page_range %}
+                    <li class="page-item {% if produits.number == num %}active{% endif %}">
+                        <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if produits.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ produits.next_page_number }}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-search"></i>
+            <h5>Aucun produit trouvé</h5>
+            <p>Essayez de modifier vos filtres ou ajoutez un nouveau produit.</p>
+            <a href="{% url 'produit_ajouter' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Ajouter un produit
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
