@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Catégories{% endblock %}
+{% block page_title %}Catégories{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'categorie_ajouter' %}" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-lg"></i> Nouvelle catégorie
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body" style="padding:0;">
+        {% if categories %}
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Couleur</th>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Produits</th>
+                    <th style="width:120px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in categories %}
+                <tr>
+                    <td>
+                        <span style="display:inline-block;width:22px;height:22px;border-radius:6px;background:{{ cat.couleur }};border:2px solid rgba(255,255,255,.1);"></span>
+                    </td>
+                    <td style="font-weight:600;">{{ cat.nom }}</td>
+                    <td style="color:var(--text-muted);font-size:.875rem;">{{ cat.description|default:"—"|truncatechars:60 }}</td>
+                    <td>
+                        <a href="{% url 'produit_liste' %}?categorie={{ cat.pk }}" style="color:var(--accent2);text-decoration:none;font-weight:600;">
+                            {{ cat.nb_produits }} produit{{ cat.nb_produits|pluralize }}
+                        </a>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'categorie_modifier' cat.pk %}" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'categorie_supprimer' cat.pk %}" class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-tags"></i>
+            <h5>Aucune catégorie</h5>
+            <p>Créez des catégories pour organiser vos produits.</p>
+            <a href="{% url 'categorie_ajouter' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Créer une catégorie
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}{{ titre }}{% endblock %}
+{% block page_title %}{{ titre }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-tags me-2 text-accent"></i>{{ titre }}
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Nom de la catégorie *</label>
+                        {{ form.nom }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Couleur d'identification</label>
+                        <div class="d-flex align-items-center gap-3">
+                            {{ form.couleur }}
+                            <span class="text-muted" style="font-size:.85rem;">Choisissez une couleur pour identifier la catégorie</span>
+                        </div>
+                    </div>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}<div>• {{ error }}</div>{% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <hr>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'categorie_liste' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i>
+                            {% if action == 'Ajouter' %}Créer la catégorie{% else %}Enregistrer{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
